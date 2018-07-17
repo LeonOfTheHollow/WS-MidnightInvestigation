@@ -47,13 +47,11 @@ class LoginPage extends Component {
     try {
       await this.props.login(this.state.username, this.state.password);
       console.log("The login action worked ok.");
-      console.log(this.props);
     } catch(e) {
       console.log("There was a problem logging in: ", e);
     }
     this.setState({password: ''});
     console.log("Checking for authorization...");
-    console.log(this.props);
     if (this.props.authed) {
       console.log("User is authed.");
       this.props.history.push('/');
@@ -62,7 +60,6 @@ class LoginPage extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log("Access state: ", state.access.authed);
   return {
     authed: state.access.authed,
   }

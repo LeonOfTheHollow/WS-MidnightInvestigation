@@ -4,6 +4,7 @@ const axios = require("axios");
 const ROOT_URL = "http://localhost:5050";
 
 let nextMessageId = 0;
+let nextGameId = 0;
 const nextUserId = 0;
 
 export const login = (username, password) => {
@@ -35,6 +36,26 @@ export const register = (username, password, confirmPassword) => {
   };
 };
 
+// export const buildGame = (size) => {
+//   return async dispatch => {
+//     try {
+//       const newGame = await axios.post(`${ROOT_URL}/new-game`, { gameSize: size });
+//       console.log("Built a game: ", newGame);
+//       dispatch({
+//         type: types.NEW_GAME_EXISTS,
+//         payload: newGame
+//       })
+//     } catch(e) {
+//       console.log("There was a problem building the game: ", e);
+//     }
+//   }
+// }
+
+export const buildGame = (size) => ({
+  type: types.CREATE_GAME,
+  size
+})
+
 export const addMessage = (message, author) => ({
   type: types.ADD_MESSAGE,
   id: nextMessageId++,
@@ -54,6 +75,13 @@ export const messageReceived = (message, author) => ({
   message,
   author
 })
+
+export const newGameReceived = (game) => ({
+  type: types.NEW_GAME_EXISTS,
+  id: nextGameId++,
+  game
+})
+
 
 export const populateUsersList = users => ({
   type: types.USERS_LIST,

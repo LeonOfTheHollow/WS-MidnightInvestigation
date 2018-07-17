@@ -11,6 +11,8 @@ const port = process.env.PORT || 5050;
 const wss = new WebSocket.Server({ port: 8989 });
 const mongoose = require('mongoose');
 
+const Initializer = require('./scripts/initialization/index');
+
 const corsOptions = {
   "origin": "*",
   "methods": "GET, HEAD, PUT, PATCH, POST, DELETE",
@@ -44,7 +46,7 @@ mongoose
 
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && client !== ws) { 
+    if (client.readyState === WebSocket.OPEN) { 
       client.send(JSON.stringify(data));
     }
   })
@@ -54,6 +56,7 @@ wss.on('connection', (ws) => {
   let index;
   ws.on('message', (message) => {
     const data = JSON.parse(message);
+    console.log("Got a message on the socket: ", data.type);
     switch(data.type) {
       case 'ADD_USER': {
         index = users.length;
@@ -75,6 +78,17 @@ wss.on('connection', (ws) => {
           author: data.author
         }, ws)
         break;
+      case 'CREATE_GAME':
+        console.log("About to broadcast existence of new game...");
+        const gameOptions = {
+          numberOfPlayers: data.size
+        };
+        const broadcastPayload = {
+          type: 'NEW_GAME_EXISTS',
+          game: Initializer.createGame(gameOptions)
+        };
+        broadcast(broadcastPayload, ws)
+        console.log(`Broadcast complete: `, broadcastPayload);
       default:
         break;
     }

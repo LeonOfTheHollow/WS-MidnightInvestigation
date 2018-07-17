@@ -13,7 +13,7 @@ import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import registerServiceWorker from './registerServiceWorker';
 import chat from './reducers';
-import handleNewMessage from './sagas';
+import { handleNewMessage, createNewGame } from './sagas';
 import setupSocket from './sockets';
 import username from './utils/name';
 import { addUser } from './actions';
@@ -30,6 +30,7 @@ const store = createStoreWithMiddleware(chat);
 const socket = setupSocket(store.dispatch, username);
 
 sagaMiddleware.run(handleNewMessage, { socket, username });
+sagaMiddleware.run(createNewGame, { socket });
 
 ReactDOM.render(
   <Provider store={store}>

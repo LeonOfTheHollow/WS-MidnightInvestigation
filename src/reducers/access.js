@@ -5,7 +5,6 @@ let initialState = {
 }
 
 const access = (state = initialState, action) => {
-  console.log(action.type);
   switch (action.type) {
     case types.LOGIN_SUCCESS:
       console.log("Logged in.");

@@ -1,5 +1,5 @@
 import * as types from '../constants/ActionTypes'
-import { addUser, messageReceived, populateUsersList } from '../actions'
+import { addUser, messageReceived, populateUsersList, newGameReceived } from '../actions'
 
 const setupSocket = (dispatch, username) => {
   const socket = new WebSocket('ws://localhost:8989')
@@ -13,6 +13,7 @@ const setupSocket = (dispatch, username) => {
   }
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
+    console.log("Got data on the socket: ", data.type);
     switch (data.type) {
       case types.ADD_MESSAGE:
         dispatch(messageReceived(data.message, data.author))
@@ -22,6 +23,10 @@ const setupSocket = (dispatch, username) => {
         break
       case types.USERS_LIST:
         dispatch(populateUsersList(data.users))
+        break
+      case types.NEW_GAME_EXISTS:
+        console.log("Got a new open game from the socket!");
+        dispatch(newGameReceived(data.game))
         break
       default:
         break
